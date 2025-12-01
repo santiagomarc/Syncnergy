@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Syncnergy - Smart Fitness Tracker</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'app-bg': '#0A0A14',
+                        'card-bg': '#313846',
+                        'card-action': '#41586C',
+                        'primary-yellow': '#FFC243',
+                        'secondary-blue': '#608EE9',
+                    },
+                    fontFamily: {
+                        'montserrat': ['Montserrat', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'card': '0 0 12px 0 rgba(49, 56, 70, 0.5)',
+                        'action': '0 4px 4px 0 rgba(0, 0, 0, 0.25)',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-app-bg font-montserrat text-white min-h-screen">
+    
+    <!-- Mobile Container -->
+    <div class="max-w-md mx-auto min-h-screen flex flex-col relative">
+        
+        <!-- App Bar -->
+        <header class="bg-transparent py-4 px-4 text-center">
+            <h1 class="text-primary-yellow text-2xl font-black tracking-tight">syncnergy</h1>
+        </header>
+        
+        <!-- Main Content - Scrollable -->
+        <main class="flex-1 overflow-y-auto px-4 pb-20 scrollbar-hide">
+            
+            <!-- Stats Carousel Section -->
+            <section id="statsCarousel" class="mb-6">
+                <div class="carousel-container overflow-x-scroll snap-x snap-mandatory scrollbar-hide" id="carouselScroll" style="-webkit-overflow-scrolling: touch; scrollbar-width: none;">
+                    <div class="flex gap-4">
+                        <!-- Daily Steps Card -->
+                        <div class="carousel-item snap-center flex-shrink-0 w-full" id="stepsCard">
+                            <div class="bg-card-bg rounded-3xl p-5 shadow-card">
+                                <div class="flex items-center gap-3">
+                                    <!-- Left: Circular Progress -->
+                                    <div class="flex-shrink-0">
+                                        <div class="relative w-44 h-44">
+                                            <!-- Progress Ring with INNER Shadow -->
+                                            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 120 120">
+                                                <defs>
+                                                    <filter id="inset-shadow-blue">
+                                                        <feComponentTransfer in="SourceAlpha">
+                                                            <feFuncA type="table" tableValues="1 0"/>
+                                                        </feComponentTransfer>
+                                                        <feGaussianBlur stdDeviation="2"/>
+                                                        <feOffset dx="0" dy="2" result="offsetblur"/>
+                                                        <feFlood flood-color="#000000" result="color"/>
+                                                        <feComposite in2="offsetblur" operator="in"/>
+                                                        <feComposite in2="SourceAlpha" operator="in"/>
+                                                        <feMerge>
+                                                            <feMergeNode in="SourceGraphic"/>
+                                                            <feMergeNode/>
+                                                        </feMerge>
+                                                    </filter>
+                                                    <filter id="inset-shadow-yellow">
+                                                        <feComponentTransfer in="SourceAlpha">
+                                                            <feFuncA type="table" tableValues="1 0"/>
+                                                        </feComponentTransfer>
+                                                        <feGaussianBlur stdDeviation="2.5"/>
+                                                        <feOffset dx="0" dy="2" result="offsetblur"/>
+                                                        <feFlood flood-color="#000000" result="color"/>
+                                                        <feComposite in2="offsetblur" operator="in"/>
+                                                        <feComposite in2="SourceAlpha" operator="in"/>
+                                                        <feMerge>
+                                                            <feMergeNode in="SourceGraphic"/>
+                                                            <feMergeNode/>
+                                                        </feMerge>
+                                                    </filter>
+                                                </defs>
+                                                <!-- Background Ring (Blue) -->
+                                                <circle cx="60" cy="60" r="48" fill="none" stroke="#608EE9" stroke-width="20" 
+                                                        opacity="1" filter="url(#inset-shadow-blue)"/>
+                                                <!-- Progress Ring (Yellow) - 34.56% -->
+                                                <circle id="stepsProgressRing" cx="60" cy="60" r="48" fill="none" stroke="#FFC243" stroke-width="20" 
+                                                        stroke-dasharray="302" stroke-dashoffset="198" stroke-linecap="round"
+                                                        filter="url(#inset-shadow-yellow)"/>
+                                            </svg>
+                                            <!-- Inner Circle with Icon -->
+                                            <div class="absolute inset-0 flex items-center justify-center">
+                                                <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Right: Stats -->
+                                    <div class="flex-1">
+                                        <h3 class="text-white text-xl font-extrabold mb-1 drop-shadow-lg tracking-tight">Daily Steps</h3>
+                                        <p id="stepsValue" class="text-primary-yellow text-[32px] font-black leading-none mb-2">3,456</p>
+                                        
+                                        <hr class="border-white/50 mb-2">
+                                        
+                                        <!-- Goal Row -->
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"></path>
+                                            </svg>
+                                            <div class="flex-1">
+                                                <p class="text-white text-[11px] font-semibold leading-tight">Goal:</p>
+                                                <p id="stepsGoalDisplay" class="text-primary-yellow text-[11px] font-bold leading-tight">10,000 steps</p>
+                                            </div>
+                                            <button class="text-white/70 hover:text-white transition-colors edit-goal-btn" data-goal-type="steps" data-current="10000" title="Edit Goal">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        
+                                        <!-- Distance Row -->
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                                            </svg>
+                                            <div>
+                                                <p class="text-white text-[11px] font-semibold leading-tight">Distance:</p>
+                                                <p class="text-primary-yellow text-[11px] font-bold leading-tight">2.4 KM</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Flight Row -->
+                                        <div class="flex items-center gap-2">
+                                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                            </svg>
+                                            <div>
+                                                <p class="text-white text-[11px] font-semibold leading-tight">Flight:</p>
+                                                <p class="text-primary-yellow text-[11px] font-bold leading-tight">12 m</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Calories Burned Card -->
+                        <div class="carousel-item snap-center flex-shrink-0 w-full" id="caloriesCard">
+                            <div class="bg-card-bg rounded-3xl p-5 shadow-card">
+                                <div class="flex items-center gap-3">
+                                    <!-- Left: Circular Progress -->
+                                    <div class="flex-shrink-0">
+                                        <div class="relative w-44 h-44">
+                                            <!-- Progress Ring with INNER Shadow -->
+                                            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 120 120">
+                                                <defs>
+                                                    <filter id="inset-shadow-blue-orange">
+                                                        <feComponentTransfer in="SourceAlpha">
+                                                            <feFuncA type="table" tableValues="1 0"/>
+                                                        </feComponentTransfer>
+                                                        <feGaussianBlur stdDeviation="2"/>
+                                                        <feOffset dx="0" dy="2" result="offsetblur"/>
+                                                        <feFlood flood-color="#000000" result="color"/>
+                                                        <feComposite in2="offsetblur" operator="in"/>
+                                                        <feComposite in2="SourceAlpha" operator="in"/>
+                                                        <feMerge>
+                                                            <feMergeNode in="SourceGraphic"/>
+                                                            <feMergeNode/>
+                                                        </feMerge>
+                                                    </filter>
+                                                    <filter id="inset-shadow-orange">
+                                                        <feComponentTransfer in="SourceAlpha">
+                                                            <feFuncA type="table" tableValues="1 0"/>
+                                                        </feComponentTransfer>
+                                                        <feGaussianBlur stdDeviation="2.5"/>
+                                                        <feOffset dx="0" dy="2" result="offsetblur"/>
+                                                        <feFlood flood-color="#000000" result="color"/>
+                                                        <feComposite in2="offsetblur" operator="in"/>
+                                                        <feComposite in2="SourceAlpha" operator="in"/>
+                                                        <feMerge>
+                                                            <feMergeNode in="SourceGraphic"/>
+                                                            <feMergeNode/>
+                                                        </feMerge>
+                                                    </filter>
+                                                </defs>
+                                                <!-- Background Ring (Blue) -->
+                                                <circle cx="60" cy="60" r="48" fill="none" stroke="#608EE9" stroke-width="20" 
+                                                        opacity="1" filter="url(#inset-shadow-blue-orange)"/>
+                                                <!-- Progress Ring (Orange) - 62% -->
+                                                <circle id="caloriesProgressRing" cx="60" cy="60" r="48" fill="none" stroke="#FF8C42" stroke-width="20" 
+                                                        stroke-dasharray="302" stroke-dashoffset="115" stroke-linecap="round"
+                                                        filter="url(#inset-shadow-orange)"/>
+                                            </svg>
+                                            <!-- Inner Circle with Icon -->
+                                            <div class="absolute inset-0 flex items-center justify-center">
+                                                <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"></path>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z"></path>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Right: Stats -->
+                                    <div class="flex-1">
+                                        <h3 class="text-white text-xl font-extrabold mb-1 drop-shadow-lg tracking-tight">Calories Burned</h3>
+                                        <p id="caloriesValue" class="text-[#FF8C42] text-[32px] font-black leading-none mb-2">1,240</p>
+                                        
+                                        <hr class="border-white/50 mb-2">
+                                        
+                                        <!-- Goal Row -->
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"></path>
+                                            </svg>
+                                            <div class="flex-1">
+                                                <p class="text-white text-[11px] font-semibold leading-tight">Goal:</p>
+                                                <p id="caloriesGoalDisplay" class="text-[#FF8C42] text-[11px] font-bold leading-tight">2,000 calories</p>
+                                            </div>
+                                            <button class="text-white/70 hover:text-white transition-colors edit-goal-btn" data-goal-type="calories" data-current="2000" title="Edit Goal">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        
+                                        <!-- Active Row -->
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                            </svg>
+                                            <div>
+                                                <p class="text-white text-[11px] font-semibold leading-tight">Active:</p>
+                                                <p class="text-[#FF8C42] text-[11px] font-bold leading-tight">820 cal</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Resting Row -->
+                                        <div class="flex items-center gap-2">
+                                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                                            </svg>
+                                            <div>
+                                                <p class="text-white text-[11px] font-semibold leading-tight">Resting:</p>
+                                                <p class="text-[#FF8C42] text-[11px] font-bold leading-tight">420 cal</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Active Minutes Card -->
+                        <div class="carousel-item snap-center flex-shrink-0 w-full" id="workoutCard">
+                            <div class="bg-card-bg rounded-3xl p-5 shadow-card">
+                                <div class="flex items-center gap-3">
+                                    <!-- Left: Circular Progress -->
+                                    <div class="flex-shrink-0">
+                                        <div class="relative w-44 h-44">
+                                            <!-- Progress Ring with INNER Shadow -->
+                                            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 120 120">
+                                                <defs>
+                                                    <filter id="inset-shadow-blue-green">
+                                                        <feComponentTransfer in="SourceAlpha">
+                                                            <feFuncA type="table" tableValues="1 0"/>
+                                                        </feComponentTransfer>
+                                                        <feGaussianBlur stdDeviation="2"/>
+                                                        <feOffset dx="0" dy="2" result="offsetblur"/>
+                                                        <feFlood flood-color="#000000" result="color"/>
+                                                        <feComposite in2="offsetblur" operator="in"/>
+                                                        <feComposite in2="SourceAlpha" operator="in"/>
+                                                        <feMerge>
+                                                            <feMergeNode in="SourceGraphic"/>
+                                                            <feMergeNode/>
+                                                        </feMerge>
+                                                    </filter>
+                                                    <filter id="inset-shadow-green">
+                                                        <feComponentTransfer in="SourceAlpha">
+                                                            <feFuncA type="table" tableValues="1 0"/>
+                                                        </feComponentTransfer>
+                                                        <feGaussianBlur stdDeviation="2.5"/>
+                                                        <feOffset dx="0" dy="2" result="offsetblur"/>
+                                                        <feFlood flood-color="#000000" result="color"/>
+                                                        <feComposite in2="offsetblur" operator="in"/>
+                                                        <feComposite in2="SourceAlpha" operator="in"/>
+                                                        <feMerge>
+                                                            <feMergeNode in="SourceGraphic"/>
+                                                            <feMergeNode/>
+                                                        </feMerge>
+                                                    </filter>
+                                                </defs>
+                                                <!-- Background Ring (Blue) -->
+                                                <circle cx="60" cy="60" r="48" fill="none" stroke="#608EE9" stroke-width="20" 
+                                                        opacity="1" filter="url(#inset-shadow-blue-green)"/>
+                                                <!-- Progress Ring (Green) - 75% -->
+                                                <circle id="workoutProgressRing" cx="60" cy="60" r="48" fill="none" stroke="#4CAF50" stroke-width="20" 
+                                                        stroke-dasharray="302" stroke-dashoffset="76" stroke-linecap="round"
+                                                        filter="url(#inset-shadow-green)"/>
+                                            </svg>
+                                            <!-- Inner Circle with Icon -->
+                                            <div class="absolute inset-0 flex items-center justify-center">
+                                                <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Right: Stats -->
+                                    <div class="flex-1">
+                                        <h3 class="text-white text-xl font-extrabold mb-1 drop-shadow-lg tracking-tight">Active Minutes</h3>
+                                        <p id="workoutValue" class="text-[#4CAF50] text-[32px] font-black leading-none mb-2">45</p>
+                                        
+                                        <hr class="border-white/50 mb-2">
+                                        
+                                        <!-- Goal Row -->
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"></path>
+                                            </svg>
+                                            <div class="flex-1">
+                                                <p class="text-white text-[11px] font-semibold leading-tight">Goal:</p>
+                                                <p id="workoutGoalDisplay" class="text-[#4CAF50] text-[11px] font-bold leading-tight">60 minutes</p>
+                                            </div>
+                                            <button class="text-white/70 hover:text-white transition-colors edit-goal-btn" data-goal-type="workout" data-current="60" title="Edit Goal">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        
+                                        <!-- Cardio Row -->
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                            </svg>
+                                            <div>
+                                                <p class="text-white text-[11px] font-semibold leading-tight">Cardio:</p>
+                                                <p class="text-[#4CAF50] text-[11px] font-bold leading-tight">30 min</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Strength Row -->
+                                        <div class="flex items-center gap-2">
+                                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path>
+                                            </svg>
+                                            <div>
+                                                <p class="text-white text-[11px] font-semibold leading-tight">Strength:</p>
+                                                <p class="text-[#4CAF50] text-[11px] font-bold leading-tight">15 min</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Page Indicators -->
+                <div class="flex justify-center gap-2 mt-3">
+                    <div class="indicator w-2 h-2 rounded-full bg-white transition-all duration-300" data-index="0"></div>
+                    <div class="indicator w-2 h-2 rounded-full bg-white/30 transition-all duration-300" data-index="1"></div>
+                    <div class="indicator w-2 h-2 rounded-full bg-white/30 transition-all duration-300" data-index="2"></div>
+                </div>
+            </section>
+            
+            <!-- Today's Insights Card -->
+            <section class="mb-6">
+                <div class="bg-card-bg rounded-3xl p-5 shadow-card">
+                    <h2 class="text-center text-2xl font-black mb-4 tracking-tight">TODAY'S INSIGHTS</h2>
+                    
+                    <!-- Dynamic Insight Rows -->
+                    <div id="insightsContainer" class="space-y-3">
+                        <!-- Insights will be dynamically generated -->
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Quick Actions Card -->
+            <section class="mb-6">
+                <div class="bg-card-bg rounded-3xl p-5 shadow-card">
+                    <h2 class="text-center text-2xl font-black mb-4 tracking-tight">QUICK ACTIONS</h2>
+                    
+                    <!-- Action Buttons Grid -->
+                    <div class="grid grid-cols-3 gap-3">
+                        <!-- Log Activity -->
+                        <a href="add_activity.html" class="action-btn bg-card-action rounded-2xl p-3 shadow-action min-h-[130px] flex flex-col items-center justify-center transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95">
+                            <div class="w-9 h-9 bg-secondary-blue rounded-full flex items-center justify-center mb-2" style="box-shadow: inset 0 3px 6px rgba(0,0,0,0.6), 0 4px 8px rgba(0,0,0,0.3);">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-white text-[11px] font-extrabold text-center mb-1">Log Activity</h3>
+                            <p class="text-white/70 text-[9px] text-center leading-tight">Record your daily movement.</p>
+                        </a>
+                        
+                        <!-- Log Workout -->
+                        <a href="add_workout.html" class="action-btn bg-card-action rounded-2xl p-3 shadow-action min-h-[130px] flex flex-col items-center justify-center transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95">
+                            <div class="w-9 h-9 bg-secondary-blue rounded-full flex items-center justify-center mb-2" style="box-shadow: inset 0 3px 6px rgba(0,0,0,0.6), 0 4px 8px rgba(0,0,0,0.3);">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 4v12l-4-2-4 2V4M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-white text-[11px] font-extrabold text-center mb-1">Log Workout</h3>
+                            <p class="text-white/70 text-[9px] text-center leading-tight">Add a gym or home workout.</p>
+                        </a>
+                        
+                        <!-- Add Water -->
+                        <a href="add_hydration.html" class="action-btn bg-card-action rounded-2xl p-3 shadow-action min-h-[130px] flex flex-col items-center justify-center transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95">
+                            <div class="w-9 h-9 bg-secondary-blue rounded-full flex items-center justify-center mb-2" style="box-shadow: inset 0 3px 6px rgba(0,0,0,0.6), 0 4px 8px rgba(0,0,0,0.3);">
+                                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-white text-[11px] font-extrabold text-center mb-1">Add Water</h3>
+                            <p class="text-white/70 text-[9px] text-center leading-tight">Log your water intake.</p>
+                        </a>
+                    </div>
+                </div>
+            </section>
+            
+        </main>
+        
+        <!-- Bottom Navigation Bar -->
+        <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-card-bg border-t border-white/10 h-16 z-40" role="navigation" aria-label="Main navigation">
+            <div class="flex items-center justify-evenly h-full px-6">
+                <!-- Home -->
+                <a href="index.html" class="nav-icon text-primary-yellow p-2" aria-label="Home - Dashboard" aria-current="page">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                </a>
+                
+                <!-- List -->
+                <a href="log.html" class="nav-icon text-white/50 hover:text-white p-2" aria-label="Activity Log">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </a>
+                
+                <!-- Stats -->
+                <a href="stats.html" class="nav-icon text-white/50 hover:text-white p-2" aria-label="Statistics and Progress">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                </a>
+                
+                <!-- Profile -->
+                <a href="profile.html" class="nav-icon text-white/50 hover:text-white p-2" aria-label="Profile Settings">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                </a>
+            </div>
+        </nav>
+        
+    </div>
+    
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 bg-card-bg text-white px-6 py-3 rounded-full shadow-xl opacity-0 pointer-events-none transition-all duration-300 z-50 max-w-xs text-center">
+        <p id="toastMessage" class="text-sm font-semibold"></p>
+    </div>
+    
+    <!-- Modal Dialog -->
+    <div id="modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-card-bg rounded-3xl p-6 mx-4 max-w-sm w-full shadow-2xl transform scale-95 transition-transform duration-300" id="modalContent">
+            <h3 id="modalTitle" class="text-xl font-black text-white mb-3 text-center"></h3>
+            <p id="modalMessage" class="text-white/80 text-sm mb-6 text-center"></p>
+            <div class="flex gap-3">
+                <button id="modalCancel" class="flex-1 bg-card-action text-white py-3 rounded-xl font-bold hover:bg-opacity-80 transition-all">
+                    Cancel
+                </button>
+                <button id="modalConfirm" class="flex-1 bg-secondary-blue text-white py-3 rounded-xl font-bold hover:bg-opacity-90 transition-all">
+                    Confirm
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Goal Edit Modal -->
+    <div id="goalModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 opacity-0 pointer-events-none transition-opacity duration-300" role="dialog" aria-labelledby="goalModalTitle" aria-modal="true">
+        <div class="bg-card-bg rounded-3xl p-6 mx-4 max-w-sm w-full shadow-2xl transform scale-95 transition-transform duration-300" id="goalModalContent">
+            <div class="text-center mb-4">
+                <span id="goalModalIcon" class="text-4xl" aria-hidden="true">🎯</span>
+            </div>
+            <h3 id="goalModalTitle" class="text-xl font-black text-white mb-2 text-center"></h3>
+            <p id="goalModalDesc" class="text-white/60 text-sm mb-4 text-center">Set a realistic goal to stay motivated!</p>
+            
+            <div class="mb-6">
+                <label for="goalInput" class="sr-only">Goal value</label>
+                <input type="number" id="goalInput" 
+                    class="w-full bg-app-bg border-2 border-white/20 focus:border-primary-yellow rounded-2xl px-4 py-3 text-white text-center text-2xl font-bold outline-none transition-colors"
+                    placeholder="Enter value" aria-describedby="goalUnit">
+                <p id="goalUnit" class="text-white/50 text-sm text-center mt-2">steps per day</p>
+            </div>
+            
+            <div class="flex gap-3">
+                <button onclick="hideGoalModal()" class="flex-1 bg-card-action text-white py-3 rounded-xl font-bold hover:bg-opacity-80 transition-all" aria-label="Cancel editing goal">
+                    Cancel
+                </button>
+                <button onclick="saveGoal()" class="flex-1 bg-gradient-to-r from-primary-yellow to-yellow-500 text-black py-3 rounded-xl font-bold hover:opacity-90 transition-all" aria-label="Save goal">
+                    Save
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Onboarding Hint Modal (HCI: Help & Documentation) -->
+    <div id="onboardingModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[60] opacity-0 pointer-events-none transition-opacity duration-300" role="dialog" aria-labelledby="onboardingTitle" aria-modal="true">
+        <div id="onboardingContent" class="bg-gradient-to-br from-card-bg to-card-action rounded-3xl p-6 mx-4 max-w-sm w-full shadow-2xl transform scale-95 transition-transform duration-300 border border-primary-yellow/30">
+            <div class="text-center mb-4">
+                <div class="w-16 h-16 bg-primary-yellow/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <span class="text-4xl" id="onboardingIcon">👋</span>
+                </div>
+                <h3 id="onboardingTitle" class="text-xl font-black text-white mb-2">Welcome to Syncnergy!</h3>
+                <p id="onboardingText" class="text-white/70 text-sm">Here are some quick tips to get you started.</p>
+            </div>
+            
+            <!-- Tips List -->
+            <div class="space-y-3 mb-6" id="onboardingTips">
+                <div class="flex items-start gap-3 bg-app-bg/30 rounded-xl p-3">
+                    <span class="text-xl flex-shrink-0">📊</span>
+                    <div>
+                        <p class="text-white text-xs font-bold">Swipe the Progress Cards</p>
+                        <p class="text-white/50 text-[10px]">View steps, calories, and workout stats</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3 bg-app-bg/30 rounded-xl p-3">
+                    <span class="text-xl flex-shrink-0">✏️</span>
+                    <div>
+                        <p class="text-white text-xs font-bold">Tap Edit Icons to Set Goals</p>
+                        <p class="text-white/50 text-[10px]">Customize your daily targets</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3 bg-app-bg/30 rounded-xl p-3">
+                    <span class="text-xl flex-shrink-0">⚡</span>
+                    <div>
+                        <p class="text-white text-xs font-bold">Use Quick Actions</p>
+                        <p class="text-white/50 text-[10px]">Log activities, workouts & hydration</p>
+                    </div>
+                </div>
+            </div>
+            
+            <button onclick="dismissOnboarding()" class="w-full bg-gradient-to-r from-primary-yellow to-yellow-500 text-black py-3 rounded-xl font-bold hover:opacity-90 transition-all">
+                Got it, let's go! 🚀
+            </button>
+            
+            <label class="flex items-center justify-center gap-2 mt-4 cursor-pointer">
+                <input type="checkbox" id="dontShowAgain" class="w-4 h-4 rounded accent-primary-yellow">
+                <span class="text-white/50 text-xs">Don't show this again</span>
+            </label>
+        </div>
+    </div>
+    
+    <!-- JavaScript -->
+    <script src="js/app.js"></script>
+</body>
+</html>

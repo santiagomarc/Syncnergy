@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Activity</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { 'app-bg': '#0A0A14', 'card-bg': '#313846', 'card-action': '#41586C', 'primary-yellow': '#FFC243', 'secondary-blue': '#608EE9', 'danger': '#EF4444' },
+                    fontFamily: { 'montserrat': ['Montserrat', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* Custom scrollbar hide */
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        /* Smooth transitions for config card */
+        #configCard { transition: all 0.3s ease; }
+    </style>
+</head>
+<body class="bg-app-bg font-montserrat text-white min-h-screen flex flex-col max-w-md mx-auto relative">
+
+    <!-- TOAST NOTIFICATION (HCI: System Feedback) -->
+    <div id="toast" class="hidden" role="alert" aria-live="polite"></div>
+
+    <!-- Skip to Content Link (Accessibility) -->
+    <a href="#configCard" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:bg-primary-yellow focus:text-app-bg focus:px-4 focus:py-2 focus:rounded-lg focus:z-[100] focus:font-bold">
+        Skip to activity configuration
+    </a>
+
+    <!-- HEADER & SEARCH -->
+    <div class="pt-6 px-4 pb-2 sticky top-0 bg-app-bg z-20">
+        <div class="flex items-center mb-4 relative">
+            <a href="log.html" class="absolute left-0 p-2 -ml-2 text-white hover:text-gray-300 active:scale-90 transition-transform">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+            </a>
+            <h1 class="w-full text-center text-xl font-black tracking-tight uppercase">ADD ACTIVITY</h1>
+        </div>
+
+        <!-- Search Bar (HCI: Flexibility & Efficiency) -->
+        <div class="relative">
+            <input type="text" id="searchInput" placeholder="Search Activity (e.g. Running)" 
+                class="w-full bg-card-bg text-white rounded-full py-3 pl-4 pr-10 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-secondary-blue placeholder-white/30 transition-all">
+            <svg class="w-5 h-5 text-white/50 absolute right-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- SCROLLABLE CONTENT -->
+    <div class="flex-1 overflow-y-auto px-4 pb-32 space-y-6 mt-4">
+
+        <!-- Frequently Logged (HCI: Recognition over Recall) -->
+        <div>
+            <p class="text-[10px] font-bold text-white/70 mb-2 uppercase tracking-wide">→ Quick pick:</p>
+            <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide" id="frequentList">
+                <!-- JS injected -->
+            </div>
+        </div>
+
+        <!-- History Card (HCI: Consistency, Learnability) -->
+        <div class="bg-card-bg rounded-2xl p-4 shadow-lg">
+            <h3 class="text-lg font-extrabold mb-3 flex items-center gap-2">
+                <svg class="w-5 h-5 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                History
+            </h3>
+            <div id="historyList" class="space-y-1">
+                <!-- JS injected -->
+            </div>
+        </div>
+
+        <!-- CONFIGURATION CARD (HCI: Visibility, Feedback) -->
+        <div id="configCard" class="bg-card-bg rounded-3xl p-5 shadow-xl border border-white/5">
+            <div class="mb-6">
+                <p class="text-[10px] text-white/40 uppercase tracking-wider mb-1">Selected Activity</p>
+                <h2 id="selectedActivityTitle" class="text-2xl font-black text-primary-yellow inline-block border-b-4 border-primary-yellow/30 pb-1 transition-transform duration-200">
+                    Select an activity
+                </h2>
+            </div>
+
+            <!-- Inputs Grid -->
+            <div class="space-y-5">
+                
+                <!-- Duration Input (HCI: Clear Labeling, Affordance) -->
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 bg-secondary-blue/20 rounded-lg flex items-center justify-center">
+                            <svg class="w-4 h-4 text-secondary-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <label class="text-sm font-bold">Duration</label>
+                    </div>
+                    <div class="w-36 relative">
+                        <input type="number" id="inputDuration" class="w-full bg-app-bg/50 border border-white/10 rounded-full py-3 text-center font-bold text-white text-lg focus:outline-none focus:border-secondary-blue focus:ring-1 focus:ring-secondary-blue transition-all" placeholder="0" min="1" max="300">
+                        <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-white/40 font-bold uppercase">mins</span>
+                    </div>
+                </div>
+
+                <!-- Intensity Selector - FIXED IDs (HCI: Segmented Control, Clear State) -->
+                <div>
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="w-8 h-8 bg-primary-yellow/20 rounded-lg flex items-center justify-center">
+                            <svg class="w-4 h-4 text-primary-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        </div>
+                        <label class="text-sm font-bold">Intensity</label>
+                    </div>
+                    <div class="flex bg-app-bg/50 rounded-full p-1.5 border border-white/10">
+                        <button onclick="setIntensity('Low')" id="btnLow" class="flex-1 py-2.5 rounded-full text-xs font-bold transition-all duration-300 text-white/50 hover:text-white hover:bg-white/5">
+                            🌿 Low
+                        </button>
+                        <button onclick="setIntensity('Moderate')" id="btnMod" class="flex-1 py-2.5 rounded-full text-xs font-bold transition-all duration-300 bg-secondary-blue text-white shadow-lg shadow-blue-500/30">
+                            ⚡ Moderate
+                        </button>
+                        <button onclick="setIntensity('High')" id="btnHigh" class="flex-1 py-2.5 rounded-full text-xs font-bold transition-all duration-300 text-white/50 hover:text-white hover:bg-white/5">
+                            🔥 High
+                        </button>
+                    </div>
+                    <p class="text-[10px] text-white/30 mt-2 text-center">Tap to change intensity level</p>
+                </div>
+
+                <!-- Auto-Calculated Calories (HCI: Visibility of System Status, Real-time Feedback) -->
+                <div class="bg-gradient-to-r from-primary-yellow/10 to-primary-yellow/5 rounded-xl p-4 flex items-center justify-between border border-primary-yellow/20">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 bg-primary-yellow/20 rounded-lg flex items-center justify-center">
+                            <svg class="w-4 h-4 text-primary-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/></svg>
+                        </div>
+                        <span class="text-xs font-bold text-white/60 uppercase">Est. Burn</span>
+                    </div>
+                    <div class="flex items-end gap-1">
+                        <span class="text-3xl font-black text-primary-yellow transition-all duration-150" id="calcCalories">0</span>
+                        <span class="text-sm font-bold text-primary-yellow/70 mb-1">kcal</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- BOTTOM ACTION BAR (HCI: Consistency, Clear Primary Action) -->
+    <div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-app-bg/95 backdrop-blur-md p-4 pb-8 border-t border-white/5 rounded-t-3xl z-30">
+        <div class="flex gap-3">
+            <a href="log.html" class="flex-1 bg-card-bg hover:bg-card-action text-white py-3.5 rounded-full font-bold text-sm text-center transition-colors active:scale-95">
+                Cancel
+            </a>
+            <button onclick="saveActivity()" class="flex-[2] bg-secondary-blue hover:bg-blue-500 text-white py-3.5 rounded-full font-bold text-sm shadow-lg shadow-blue-500/30 transition-all active:scale-95 flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                Save Activity
+            </button>
+        </div>
+    </div>
+
+    <script src="js/add_activity.js"></script>
+</body>
+</html>

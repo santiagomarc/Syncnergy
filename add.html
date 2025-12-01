@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Entry</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { 'app-bg': '#0A0A14', 'card-bg': '#313846', 'card-action': '#41586C', 'primary-yellow': '#FFC243', 'secondary-blue': '#608EE9' },
+                    fontFamily: { 'montserrat': ['Montserrat', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+            background-repeat: no-repeat;
+            background-position-x: 95%;
+            background-position-y: 50%;
+        }
+    </style>
+</head>
+<body class="bg-app-bg font-montserrat text-white min-h-screen p-6 flex flex-col max-w-md mx-auto">
+
+    <div class="flex items-center justify-between mb-8">
+        <a href="log.html" class="text-white/50 hover:text-white text-sm font-bold transition-colors">Cancel</a>
+        <h1 id="pageTitle" class="text-xl font-black tracking-tight uppercase">Add Entry</h1>
+        <button onclick="saveEntry()" class="text-primary-yellow text-sm font-bold hover:text-white transition-colors">Save</button>
+    </div>
+
+    <div class="flex-1 space-y-6">
+
+        <div id="typeSection">
+            <label id="typeLabel" class="block text-xs font-bold text-white/50 mb-2 uppercase tracking-wider">Type</label>
+            <select id="activityType" class="w-full bg-card-bg rounded-2xl p-4 text-white font-bold focus:outline-none focus:ring-2 focus:ring-primary-yellow">
+                <option value="Walking">Walking</option>
+                <option value="Running">Running</option>
+                <option value="Cycling">Cycling</option>
+                <option value="Swimming">Swimming</option>
+                <option value="Hiking">Hiking</option>
+            </select>
+        </div>
+
+        <div>
+            <label id="detailLabel" class="block text-xs font-bold text-white/50 mb-2 uppercase tracking-wider">Details</label>
+            <input type="text" id="detailInput" class="w-full bg-card-bg rounded-2xl p-4 text-white font-medium focus:outline-none focus:ring-2 focus:ring-primary-yellow placeholder-white/30" placeholder="e.g., Moderate Intensity">
+            
+            <div id="hydrationInputGroup" class="hidden relative">
+                <input type="number" id="waterAmount" class="w-full bg-card-bg rounded-2xl p-4 text-white font-bold text-3xl text-center focus:outline-none focus:ring-2 focus:ring-secondary-blue" placeholder="0.0" step="0.1">
+                <span class="absolute right-8 top-1/2 -translate-y-1/2 text-white/50 font-bold">L</span>
+            </div>
+        </div>
+
+        <div id="valueSection">
+            <label id="valueLabel" class="block text-xs font-bold text-white/50 mb-2 uppercase tracking-wider">Value</label>
+            <div class="relative">
+                <input type="number" id="valueInput" class="w-full bg-card-bg rounded-2xl p-4 text-white font-bold focus:outline-none focus:ring-2 focus:ring-primary-yellow" placeholder="0">
+                <span id="unitLabel" class="absolute right-6 top-1/2 -translate-y-1/2 text-white/50 font-bold text-sm">kcal</span>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const type = params.get('type');
+
+        // Redirect workout to the dedicated page
+        if (type === 'workout') {
+            window.location.href = 'add_workout.html';
+        }
+
+        const pageTitle = document.getElementById('pageTitle');
+        const activitySelect = document.getElementById('activityType');
+        const detailInput = document.getElementById('detailInput');
+        const valueSection = document.getElementById('valueSection');
+        const valueLabel = document.getElementById('valueLabel');
+        const valueInput = document.getElementById('valueInput');
+        const unitLabel = document.getElementById('unitLabel');
+        const hydrationGroup = document.getElementById('hydrationInputGroup');
+
+        if (type === 'activity') {
+            pageTitle.innerText = "Log Activity";
+            document.getElementById('typeLabel').innerText = "Select Activity";
+            detailInput.placeholder = "e.g., 6:00 AM - Moderate";
+            valueLabel.innerText = "Calories Burned";
+            unitLabel.innerText = "kcal";
+        } 
+        else if (type === 'hydration') {
+            pageTitle.innerText = "Log Water";
+            document.getElementById('typeSection').classList.add('hidden');
+            document.getElementById('detailLabel').innerText = "Amount Consumed";
+            
+            detailInput.classList.add('hidden');
+            hydrationGroup.classList.remove('hidden');
+            valueSection.classList.add('hidden');
+        }
+
+        function saveEntry() {
+            let appData = JSON.parse(localStorage.getItem('syncnergyData')) || { activities: [], workouts: [], hydration: [] };
+            const newId = Date.now();
+
+            if (type === 'activity') {
+                appData.activities.push({
+                    id: newId,
+                    name: activitySelect.value,
+                    detail: detailInput.value || "Standard session",
+                    calories: parseInt(valueInput.value) || 0
+                });
+            } 
+            else if (type === 'hydration') {
+                const amount = parseFloat(document.getElementById('waterAmount').value) || 0;
+                if (amount === 0) return alert("Please enter an amount");
+                appData.hydration.push({
+                    id: newId,
+                    name: `${amount} L`,
+                    detail: "Quick Add",
+                    amount: amount
+                });
+            }
+
+            localStorage.setItem('syncnergyData', JSON.stringify(appData));
+            window.location.href = 'log.html';
+        }
+    </script>
+</body>
+</html>
