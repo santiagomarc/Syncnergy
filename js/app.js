@@ -544,3 +544,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 500);
     }
 });
+
+// ========================================
+// PWA NAVIGATION FUNCTION
+// ========================================
+// This function maintains fullscreen/standalone mode when navigating
+// between pages in a PWA (Progressive Web App) context.
+// Using window.location.href instead of <a href> prevents the
+// browser from breaking out of the standalone display mode.
+window.navigateApp = function(url) {
+    window.location.href = url;
+};

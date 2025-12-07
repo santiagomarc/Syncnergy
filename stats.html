@@ -37,7 +37,7 @@
         
         <!-- HEADER (HCI: Clear Navigation) -->
         <header class="flex items-center justify-between p-4 sticky top-0 z-50 bg-app-bg/95 backdrop-blur-md border-b border-white/5">
-            <a href="index.html" class="p-2 -ml-2 text-white hover:text-gray-300 active:scale-90 transition-transform">
+            <a onclick="navigateApp('index.html')" class="p-2 -ml-2 text-white hover:text-gray-300 active:scale-90 transition-transform cursor-pointer">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
             </a>
             <div class="text-center">
@@ -228,16 +228,16 @@
         <!-- BOTTOM NAV (Active: Stats) -->
         <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-card-bg border-t border-white/10 h-16 z-40" role="navigation" aria-label="Main navigation">
             <div class="flex items-center justify-evenly h-full px-6">
-                <a href="index.html" class="nav-icon text-white/50 hover:text-white transition-colors p-2" aria-label="Home - Dashboard">
+                <a onclick="navigateApp('index.html')" class="nav-icon text-white/50 hover:text-white transition-colors p-2 cursor-pointer" aria-label="Home - Dashboard">
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                 </a>
-                <a href="log.html" class="nav-icon text-white/50 hover:text-white transition-colors p-2" aria-label="Activity Log">
+                <a onclick="navigateApp('log.html')" class="nav-icon text-white/50 hover:text-white transition-colors p-2 cursor-pointer" aria-label="Activity Log">
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </a>
-                <a href="stats.html" class="nav-icon text-primary-yellow p-2" aria-label="Statistics - Current page" aria-current="page">
+                <a onclick="navigateApp('stats.html')" class="nav-icon text-primary-yellow p-2 cursor-pointer" aria-label="Statistics - Current page" aria-current="page">
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                 </a>
-                <a href="profile.html" class="nav-icon text-white/50 hover:text-white transition-colors p-2" aria-label="Profile Settings">
+                <a onclick="navigateApp('profile.html')" class="nav-icon text-white/50 hover:text-white transition-colors p-2 cursor-pointer" aria-label="Profile Settings">
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                 </a>
             </div>
@@ -245,6 +245,10 @@
 
     </div>
 
+    <!-- PWA Navigation Function -->
+    <script>
+        window.navigateApp = function(url) { window.location.href = url; };
+    </script>
     <script src="js/stats.js"></script>
 </body>
 </html>

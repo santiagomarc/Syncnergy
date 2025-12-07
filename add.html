@@ -30,7 +30,7 @@
 <body class="bg-app-bg font-montserrat text-white min-h-screen p-6 flex flex-col max-w-md mx-auto">
 
     <div class="flex items-center justify-between mb-8">
-        <a href="log.html" class="text-white/50 hover:text-white text-sm font-bold transition-colors">Cancel</a>
+        <a onclick="navigateApp('log.html')" class="text-white/50 hover:text-white text-sm font-bold transition-colors cursor-pointer">Cancel</a>
         <h1 id="pageTitle" class="text-xl font-black tracking-tight uppercase">Add Entry</h1>
         <button onclick="saveEntry()" class="text-primary-yellow text-sm font-bold hover:text-white transition-colors">Save</button>
     </div>
@@ -127,8 +127,11 @@
             }
 
             localStorage.setItem('syncnergyData', JSON.stringify(appData));
-            window.location.href = 'log.html';
+            navigateApp('log.html');
         }
+        
+        // PWA Navigation Function
+        window.navigateApp = function(url) { window.location.href = url; };
     </script>
 </body>
 </html>

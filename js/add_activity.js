@@ -50,9 +50,14 @@ function renderHistory(filter = "") {
     
     if (filtered.length === 0) {
         historyList.innerHTML = `
-            <div class="text-center py-6">
-                <p class="text-white/30 text-xs">No activities found.</p>
-                <p class="text-white/20 text-[10px] mt-1">Try a different search term</p>
+            <div class="text-center py-8">
+                <div class="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <svg class="w-6 h-6 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </div>
+                <p class="text-white/40 text-sm font-medium">No activities found</p>
+                <p class="text-white/20 text-xs mt-1">Try a different search term</p>
             </div>`;
         return;
     }
@@ -188,7 +193,7 @@ window.saveActivity = function() {
     // Success feedback before redirect
     showSuccess("Activity saved!");
     setTimeout(() => {
-        window.location.href = 'log.html';
+        navigateApp('log.html');
     }, 500);
 }
 
@@ -234,6 +239,11 @@ function showSuccess(message) {
 // Initialize with defaults
 renderFrequent();
 renderHistory();
+
+// Auto-focus search input for immediate typing (HCI: Efficiency)
+setTimeout(() => {
+    if (searchInput) searchInput.focus();
+}, 100);
 
 // Pre-select Walking to show the UI state (HCI: Visibility - show users what's possible)
 selectActivity('Walking', 30, 'Moderate');
